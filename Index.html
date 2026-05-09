@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS VAULT NEPAL – Learning Hub</title>
+    <style>
+        :root {
+            --primary: #1e3c72;
+            --primary-light: #2a5298;
+            --accent: #ff6b35;
+            --bg: #f8f9fa;
+            --card: #ffffff;
+            --text: #212529;
+            --text-light: #6c757d;
+            --border: #dee2e6;
+            --radius: 16px;
+            --shadow: 0 8px 30px rgba(0,0,0,0.05);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #f0f4f8, #e9ecef);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .hub {
+            max-width: 1100px;
+            width: 100%;
+            background: var(--card);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 32px;
+        }
+        .header h1 { font-size: 2rem; font-weight: 700; }
+        .header p { opacity: 0.9; margin-top: 6px; }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+        .tab-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .content { padding: 32px; }
+        .section { display: none; }
+        .section.active { display: block; animation: fade 0.3s ease; }
+        @keyframes fade { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid var(--border);
+        }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+        .topic-card {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid var(--border);
+        }
+        .topic-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .topic-card h4 { color: var(--primary); margin-bottom: 8px; }
+        .flashcard {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border-radius: var(--radius);
+            padding: 32px;
+            text-align: center;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.6rem;
+            font-weight: 700;
+            transition: 0.4s;
+            user-select: none;
+            margin: 20px 0;
+            box-shadow: 0 8px 20px rgba(30,60,114,0.2);
+        }
+        .flashcard.flipped { background: var(--accent); }
+        .progress-ring { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+        .ring { width: 60px; height: 60px; border-radius: 50%; border: 6px solid #e9ecef; position: relative; }
+        .ring span { position: absolute; top:50%; left:50%; transform: translate(-50%,-50%); font-weight: 700; }
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+        button:hover { background: var(--primary-light); }
+        button.secondary { background: white; color: var(--primary); border: 2px solid var(--primary); }
+        button.accent { background: var(--accent); }
+        .accordion-item { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+        .accordion-header {
+            background: var(--bg);
+            padding: 16px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .accordion-body { padding: 0 20px 20px; display: none; }
+        .accordion-body.open { display: block; }
+        .slider-group { margin: 16px 0; }
+        .slider-group label { display: block; font-weight: 600; margin-bottom: 4px; }
+        input[type=range] { width: 100%; accent-color: var(--primary); }
+        .overall-score { font-size: 3rem; font-weight: 800; color: var(--accent); text-align: center; margin: 20px 0; }
+        .btn-group { display: flex; gap: 12px; margin-top: 16px; }
+        textarea { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid var(--border); font-family: inherit; font-size: 0.95rem; resize: vertical; }
+        .model-answer { background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 12px; border-radius: 8px; margin-top: 12px; display: none; }
+        .quiz-option { background: white; border: 2px solid var(--border); border-radius: 8px; padding: 12px; margin: 8px 0; cursor: pointer; transition: 0.2s; }
+        .quiz-option:hover { border-color: var(--primary); }
+        .quiz-option.selected { border-color: var(--accent); background: #fff5f0; font-weight: bold; }
+        .quiz-option.correct { border-color: #2e7d32; background: #e8f5e9; }
+        .quiz-option.wrong { border-color: #c62828; background: #ffebee; }
+    </style>
+</head>
+<body>
+<div class="hub">
+    <div class="header">
+        <h1>📚 IELTS VAULT NEPAL</h1>
+        <p>Learning Hub – Vocabulary, Grammar & Band Calculator</p>
+        <div class="tabs" id="tabContainer">
+            <button class="tab-btn active" data-section="vocab">📖 Vocabulary</button>
+            <button class="tab-btn" data-section="grammar">✍️ Grammar</button>
+            <button class="tab-btn" data-section="calculator">📊 Band Calculator</button>
+        </div>
+    </div>
+    <div class="content">
+        <!-- VOCABULARY SECTION -->
+        <div class="section active" id="section-vocab">
+            <h3>Vocabulary Builder</h3>
+            <p>Choose a topic to study, then flip flashcards or take a quiz.</p>
+            <div class="grid-2" id="topic-list"></div>
+            <div id="flashcard-area" class="hidden">
+                <div class="flashcard" id="flashcard" onclick="flipCard()">Click to flip</div>
+                <div class="btn-group">
+                    <button id="prev-card">← Previous</button>
+                    <button id="next-card">Next →</button>
+                </div>
+                <div class="progress-ring">
+                    <div class="ring" style="border-color: var(--accent);"><span id="known-count">0</span></div>
+                    <div><strong>Words known</strong><br>out of 8</div>
+                </div>
+                <button class="accent" id="start-quiz-btn">Take Quiz</button>
+                <div class="btn-group">
+                    <button class="secondary" id="back-topics">← Back to topics</button>
+                </div>
+            </div>
+            <!-- Quiz Area -->
+            <div id="quiz-area" class="hidden">
+                <h4>Vocabulary Quiz – <span id="quiz-topic-name"></span></h4>
+                <div id="quiz-question"></div>
+                <div id="quiz-options"></div>
+                <div class="btn-group">
+                    <button id="next-question-btn" class="hidden">Next Question</button>
+                    <button id="finish-quiz-btn" class="hidden">Finish Quiz</button>
+                </div>
+                <div id="quiz-result" class="card hidden"></div>
+                <button class="secondary" id="back-to-flashcards">← Back to flashcards</button>
+            </div>
+        </div>
+
+        <!-- GRAMMAR SECTION -->
+        <div class="section" id="section-grammar">
+            <h3>Grammar Mini‑Lessons</h3>
+            <div id="grammar-list"></div>
+        </div>
+
+        <!-- BAND CALCULATOR SECTION -->
+        <div class="section" id="section-calculator">
+            <h3>Band Score Calculator</h3>
+            <div class="card">
+                <div class="slider-group">
+                    <label>Listening: <span id="listening-val">6.5</span></label>
+                    <input type="range" id="listening-slider" min="0" max="9" step="0.5" value="6.5" oninput="updateCalc()">
+                </div>
+                <div class="slider-group">
+                    <label>Reading: <span id="reading-val">6.5</span></label>
+                    <input type="range" id="reading-slider" min="0" max="9" step="0.5" value="6.5" oninput="updateCalc()">
+                </div>
+                <div class="slider-group">
+                    <label>Writing (overall): <span id="writing-val">6.0</span></label>
+                    <input type="range" id="writing-slider" min="0" max="9" step="0.5" value="6.0" oninput="updateCalc()">
+                </div>
+                <div class="slider-group">
+                    <label>Writing – Task Achievement: <span id="ta-val">6</span></label>
+                    <input type="range" id="ta-slider" min="0" max="9" step="0.5" value="6" oninput="updateWriting()">
+                </div>
+                <div class="slider-group">
+                    <label>Writing – Cohesion & Coherence: <span id="cc-val">6</span></label>
+                    <input type="range" id="cc-slider" min="0" max="9" step="0.5" value="6" oninput="updateWriting()">
+                </div>
+                <div class="slider-group">
+                    <label>Writing – Lexical Resource: <span id="lr-val">6</span></label>
+                    <input type="range" id="lr-slider" min="0" max="9" step="0.5" value="6" oninput="updateWriting()">
+                </div>
+                <div class="slider-group">
+                    <label>Writing – Grammar: <span id="gra-val">6</span></label>
+                    <input type="range" id="gra-slider" min="0" max="9" step="0.5" value="6" oninput="updateWriting()">
+                </div>
+                <div class="slider-group">
+                    <label>Speaking: <span id="speaking-val">6.5</span></label>
+                    <input type="range" id="speaking-slider" min="0" max="9" step="0.5" value="6.5" oninput="updateCalc()">
+                </div>
+                <div class="overall-score" id="overall-band">6.5</div>
+                <button onclick="saveCalc()">💾 Save This Estimate</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ---------- TABS ----------
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const secId = 'section-' + btn.dataset.section;
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(secId).classList.add('active');
+    });
+});
+
+// ========== VOCABULARY DATA ==========
+const vocabData = {
+    'Education': [
+        {word:'Curriculum', def:'The subjects comprising a course of study.'},
+        {word:'Pedagogy', def:'The method and practice of teaching.'},
+        {word:'Scholarship', def:'A grant for study, often based on merit.'},
+        {word:'Literacy', def:'The ability to read and write.'},
+        {word:'Tertiary', def:'Relating to university or college education.'},
+        {word:'Dissertation', def:'A long essay on a particular subject.'},
+        {word:'Vocational', def:'Related to practical training for a job.'},
+        {word:'Plagiarism', def:'Using someone else’s work without credit.'}
+    ],
+    'Technology': [
+        {word:'Innovation', def:'A new method, idea, or product.'},
+        {word:'Automation', def:'Use of machines to do work automatically.'},
+        {word:'Artificial Intelligence', def:'Machines that simulate human intelligence.'},
+        {word:'Obsolete', def:'No longer in use; out of date.'},
+        {word:'Bandwidth', def:'The data transfer capacity of a network.'},
+        {word:'Cryptocurrency', def:'A digital currency like Bitcoin.'},
+        {word:'Algorithm', def:'A set of rules for solving a problem.'},
+        {word:'Cybersecurity', def:'Protection of computer systems from theft or damage.'}
+    ],
+    'Environment': [
+        {word:'Biodiversity', def:'The variety of plant and animal life.'},
+        {word:'Ecosystem', def:'A community of interacting organisms.'},
+        {word:'Sustainability', def:'Meeting needs without compromising the future.'},
+        {word:'Carbon footprint', def:'Total greenhouse gas emissions caused.'},
+        {word:'Deforestation', def:'Clearing of forests on a large scale.'},
+        {word:'Renewable', def:'Energy from sources that do not run out.'},
+        {word:'Conservation', def:'Preservation of natural resources.'},
+        {word:'Pollutant', def:'A substance that contaminates the environment.'}
+    ],
+    'Health': [
+        {word:'Sedentary', def:'Characterised by much sitting and little exercise.'},
+        {word:'Immunisation', def:'Making a person immune to a disease.'},
+        {word:'Therapy', def:'Treatment intended to relieve or heal.'},
+        {word:'Diagnosis', def:'Identification of an illness.'},
+        {word:'Outbreak', def:'A sudden occurrence of a disease.'},
+        {word:'Nutrition', def:'The process of eating the right food for health.'},
+        {word:'Chronic', def:'Persisting for a long time (disease).'},
+        {word:'Vaccine', def:'A substance that stimulates immunity.'}
+    ],
+    'Travel': [
+        {word:'Itinerary', def:'A planned route or journey.'},
+        {word:'Hospitality', def:'Friendly and generous reception of guests.'},
+        {word:'Excursion', def:'A short journey usually for pleasure.'},
+        {word:'Backpacker', def:'A person who travels on a low budget.'},
+        {word:'Customs', def:'Official department for incoming goods.'},
+        {word:'Jet lag', def:'Tiredness after a long flight across time zones.'},
+        {word:'Reservation', def:'Booking of a seat, room, etc.'},
+        {word:'Visa', def:'Endorsement on a passport allowing entry.'}
+    ]
+};
+let currentTopic = '';
+let currentCards = [];
+let cardIndex = 0;
+let knownWords = new Set();
+let quizQuestions = [];
+let quizIndex = 0;
+let quizScore = 0;
+
+// Display topic list
+function renderTopics() {
+    const list = document.getElementById('topic-list');
+    list.innerHTML = Object.keys(vocabData).map(topic => `
+        <div class="topic-card" onclick="openTopic('${topic}')">
+            <h4>📚 ${topic}</h4>
+            <p style="color:var(--text-light)">8 essential IELTS words</p>
+        </div>
+    `).join('');
+}
+renderTopics();
+
+function openTopic(topic) {
+    currentTopic = topic;
+    currentCards = vocabData[topic];
+    cardIndex = 0;
+    knownWords = new Set();
+    document.getElementById('topic-list').classList.add('hidden');
+    document.getElementById('flashcard-area').classList.remove('hidden');
+    document.getElementById('quiz-area').classList.add('hidden');
+    updateFlashcard();
+}
+
+function updateFlashcard() {
+    const card = document.getElementById('flashcard');
+    card.textContent = currentCards[cardIndex].word;
+    card.classList.remove('flipped');
+    document.getElementById('known-count').textContent = knownWords.size;
+}
+
+function flipCard() {
+    const card = document.getElementById('flashcard');
+    card.classList.toggle('flipped');
+    card.textContent = card.classList.contains('flipped') 
+        ? currentCards[cardIndex].def 
+        : currentCards[cardIndex].word;
+    if (card.classList.contains('flipped')) {
+        knownWords.add(cardIndex);
+        document.getElementById('known-count').textContent = knownWords.size;
+    }
+}
+
+document.getElementById('prev-card').addEventListener('click', () => {
+    if (cardIndex > 0) cardIndex--;
+    updateFlashcard();
+});
+document.getElementById('next-card').addEventListener('click', () => {
+    if (cardIndex < currentCards.length-1) cardIndex++;
+    updateFlashcard();
+});
+
+document.getElementById('back-topics').addEventListener('click', () => {
+    document.getElementById('topic-list').classList.remove('hidden');
+    document.getElementById('flashcard-area').classList.add('hidden');
+    document.getElementById('quiz-area').classList.add('hidden');
+});
+
+// Quiz mode
+document.getElementById('start-quiz-btn').addEventListener('click', () => {
+    document.getElementById('flashcard-area').classList.add('hidden');
+    document.getElementById('quiz-area').classList.remove('hidden');
+    document.getElementById('quiz-topic-name').textContent = currentTopic;
+    prepareQuiz();
+});
+
+function prepareQuiz() {
+    quizQuestions = currentCards.slice(); // all 8 words
+    // shuffle
+    for (let i = quizQuestions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [quizQuestions[i], quizQuestions[j]] = [quizQuestions[j], quizQuestions[i]];
+    }
+    quizIndex = 0;
+    quizScore = 0;
+    document.getElementById('quiz-result').classList.add('hidden');
+    document.getElementById('next-question-btn').classList.remove('hidden');
+    document.getElementById('finish-quiz-btn').classList.add('hidden');
+    showQuizQuestion();
+}
+
+function showQuizQuestion() {
+    if (quizIndex >= quizQuestions.length) {
+        finishQuiz();
+        return;
+    }
+    const question = quizQuestions[quizIndex];
+    // Create 4 options: 1 correct + 3 random other definitions from currentCards
+    let options = [question.def];
+    while (options.length < 4) {
+        const randomDef = currentCards[Math.floor(Math.random() * currentCards.length)].def;
+        if (!options.includes(randomDef)) options.push(randomDef);
+    }
+    shuffleArray(options);
+    const html = `<div class="question-block"><strong>${question.word}</strong> – choose the correct definition:</div>`;
+    const optsHtml = options.map((def, i) => 
+        `<div class="quiz-option" data-def="${def}" onclick="checkQuizAnswer(this, '${question.def}')">${def}</div>`
+    ).join('');
+    document.getElementById('quiz-question').innerHTML = html;
+    document.getElementById('quiz-options').innerHTML = optsHtml;
+    document.getElementById('next-question-btn').classList.add('hidden');
+}
+
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+}
+
+function checkQuizAnswer(selectedDiv, correctDef) {
+    const allOptions = document.querySelectorAll('.quiz-option');
+    let answered = false;
+    allOptions.forEach(opt => {
+        if (opt.dataset.def === correctDef) {
+            opt.classList.add('correct');
+        }
+        if (opt === selectedDiv && opt.dataset.def === correctDef) {
+            quizScore++;
+            answered = true;
+        }
+        opt.style.pointerEvents = 'none';
+    });
+    if (selectedDiv.dataset.def === correctDef) {
+        selectedDiv.classList.add('correct');
+    } else {
+        selectedDiv.classList.add('wrong');
+    }
+    document.getElementById('next-question-btn').classList.remove('hidden');
+    if (quizIndex === quizQuestions.length - 1) {
+        document.getElementById('next-question-btn').classList.add('hidden');
+        document.getElementById('finish-quiz-btn').classList.remove('hidden');
+    }
+}
+
+document.getElementById('next-question-btn').addEventListener('click', () => {
+    quizIndex++;
+    showQuizQuestion();
+});
+document.getElementById('finish-quiz-btn').addEventListener('click', finishQuiz);
+
+function finishQuiz() {
+    document.getElementById('quiz-result').classList.remove('hidden');
+    document.getElementById('quiz-result').innerHTML = `
+        <h4>Quiz Complete!</h4>
+        <p>Your score: <strong>${quizScore} / ${quizQuestions.length}</strong></p>
+        <p>${quizScore >= quizQuestions.length * 0.8 ? 'Excellent! 🌟' : 'Keep practicing! 📚'}</p>
+    `;
+    document.getElementById('next-question-btn').classList.add('hidden');
+    document.getElementById('finish-quiz-btn').classList.add('hidden');
+    // disable options
+    document.querySelectorAll('.quiz-option').forEach(opt => opt.style.pointerEvents = 'none');
+}
+document.getElementById('back-to-flashcards').addEventListener('click', () => {
+    document.getElementById('flashcard-area').classList.remove('hidden');
+    document.getElementById('quiz-area').classList.add('hidden');
+    updateFlashcard();
+});
+
+// ========== GRAMMAR ==========
+const grammarLessons = [
+    {
+        title:'1. Present Simple vs. Present Continuous',
+        explanation:'Present simple for habits, facts; continuous for actions happening now or around now.',
+        examples:['I work in a bank.','She is working late today.'],
+        exercise:'Complete: She usually ____ (walk) to school, but today she ____ (take) the bus.',
+        modelAnswer:'walks / is taking'
+    },
+    {
+        title:'2. Past Simple vs. Present Perfect',
+        explanation:'Past simple for completed actions at a specific time; present perfect for experiences or actions with a present result.',
+        examples:['I visited Paris in 2010.','I have visited Paris three times.'],
+        exercise:'Fill in: He ____ (live) in London since 2015. Last year he ____ (move) to a new flat.',
+        modelAnswer:'has lived / moved'
+    },
+    {
+        title:'3. Conditionals (Zero, First, Second)',
+        explanation:'Zero: general truths (if + present, present). First: real future (if + present, will). Second: unreal present (if + past, would).',
+        examples:['If you heat water, it boils.','If it rains, I will stay home.','If I won the lottery, I would travel.'],
+        exercise:'Choose: If I ____ (have) more time, I ____ (learn) piano.',
+        modelAnswer:'had / would learn'
+    },
+    {
+        title:'4. Passive Voice',
+        explanation:'Form: be + past participle. Use when the action is more important than the doer.',
+        examples:['The book was written in 1990.','The new hospital is being built.'],
+        exercise:'Rewrite: They cleaned the room. → The room ____ cleaned.',
+        modelAnswer:'was'
+    },
+    {
+        title:'5. Articles (a/an/the)',
+        explanation:'Use “a/an” for non‑specific singular countable nouns, “the” for specific things known to both speaker and listener.',
+        examples:['I saw a cat.','The cat on the roof is mine.'],
+        exercise:'Fill in: I need ____ apple and ____ orange. ____ apple is for my brother.',
+        modelAnswer:'an / an / The'
+    },
+    {
+        title:'6. Relative Clauses',
+        explanation:'Who/that for people; which/that for things. Defining clauses give essential info; non‑defining add extra info (use commas).',
+        examples:['The woman who lives next door is a doctor.','My bike, which I bought last year, is broken.'],
+        exercise:'Complete: The movie ____ we watched was boring. (which/that)',
+        modelAnswer:'which/that'
+    },
+    {
+        title:'7. Modals of Obligation & Advice',
+        explanation:'Must = strong obligation; should = advice; have to = external obligation.',
+        examples:['You must wear a seatbelt.','You should study more.'],
+        exercise:'Choose: You ____ (must/should) see a doctor if you feel ill.',
+        modelAnswer:'should'
+    },
+    {
+        title:'8. Gerunds & Infinitives',
+        explanation:'Some verbs are followed by ‑ing, others by to + infinitive. E.g., enjoy doing, want to do.',
+        examples:['I enjoy swimming.','He wants to leave.'],
+        exercise:'Complete: She suggested ____ (go) to the cinema.',
+        modelAnswer:'going'
+    },
+    {
+        title:'9. Quantifiers',
+        explanation:'Much (uncountable), many (countable), a lot of (both), few/little (negative meaning), a few/a little (positive).',
+        examples:['There is little milk left.','I have a few friends.'],
+        exercise:'Fill in: There aren’t ____ students in class today. (many/much)',
+        modelAnswer:'many'
+    },
+    {
+        title:'10. Prepositions of Time & Place',
+        explanation:'At for precise times; on for days/dates; in for months/years/seasons. At for specific points, in for enclosed areas.',
+        examples:['The meeting is at 3 pm on Monday in June.','She is in the room.'],
+        exercise:'Fill in: I will see you ____ Friday ____ 5 pm.',
+        modelAnswer:'on / at'
+    }
+];
+
+function renderGrammar() {
+    const container = document.getElementById('grammar-list');
+    container.innerHTML = grammarLessons.map((lesson, idx) => `
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>${lesson.title}</span>
+                <span>▼</span>
+            </div>
+            <div class="accordion-body">
+                <p><strong>Explanation:</strong> ${lesson.explanation}</p>
+                <ul>${lesson.examples.map(e => `<li>${e}</li>`).join('')}</ul>
+                <p><strong>Exercise:</strong> ${lesson.exercise}</p>
+                <textarea id="grammar-input-${idx}" placeholder="Your answer..."></textarea>
+                <button onclick="checkGrammarAnswer(${idx})">Check Answer</button>
+                <div class="model-answer" id="model-${idx}">
+                    <strong>Model Answer:</strong> ${lesson.modelAnswer}
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+renderGrammar();
+
+function toggleAccordion(header) {
+    const body = header.nextElementSibling;
+    body.classList.toggle('open');
+    header.querySelector('span:last-child').textContent = body.classList.contains('open') ? '▲' : '▼';
+}
+
+function checkGrammarAnswer(idx) {
+    const userAnswer = document.getElementById(`grammar-input-${idx}`).value.trim();
+    const model = document.getElementById(`model-${idx}`);
+    model.style.display = 'block';
+    if (userAnswer.toLowerCase() === grammarLessons[idx].modelAnswer.toLowerCase()) {
+        model.style.background = '#e8f5e9';
+        model.innerHTML = `<strong>✅ Correct!</strong> Model: ${grammarLessons[idx].modelAnswer}`;
+    } else {
+        model.style.background = '#ffebee';
+        model.innerHTML = `<strong>❌ Not quite.</strong> Model: ${grammarLessons[idx].modelAnswer}`;
+    }
+}
+
+// ========== BAND CALCULATOR ==========
+function updateWriting() {
+    const ta = parseFloat(document.getElementById('ta-slider').value);
+    const cc = parseFloat(document.getElementById('cc-slider').value);
+    const lr = parseFloat(document.getElementById('lr-slider').value);
+    const gra = parseFloat(document.getElementById('gra-slider').value);
+    document.getElementById('ta-val').textContent = ta;
+    document.getElementById('cc-val').textContent = cc;
+    document.getElementById('lr-val').textContent = lr;
+    document.getElementById('gra-val').textContent = gra;
+    const writingMean = (ta + cc + lr + gra) / 4;
+    document.getElementById('writing-slider').value = writingMean;
+    document.getElementById('writing-val').textContent = writingMean.toFixed(1);
+    updateCalc();
+}
+
+function updateCalc() {
+    const l = parseFloat(document.getElementById('listening-slider').value);
+    const r = parseFloat(document.getElementById('reading-slider').value);
+    const w = parseFloat(document.getElementById('writing-slider').value);
+    const s = parseFloat(document.getElementById('speaking-slider').value);
+    document.getElementById('listening-val').textContent = l;
+    document.getElementById('reading-val').textContent = r;
+    document.getElementById('writing-val').textContent = w.toFixed(1);
+    document.getElementById('speaking-val').textContent = s;
+    const overall = (l + r + w + s) / 4;
+    const rounded = Math.round(overall * 2) / 2;
+    document.getElementById('overall-band').textContent = rounded.toFixed(1);
+}
+
+function saveCalc() {
+    const data = {
+        listening: parseFloat(document.getElementById('listening-slider').value),
+        reading: parseFloat(document.getElementById('reading-slider').value),
+        writing: parseFloat(document.getElementById('writing-slider').value),
+        speaking: parseFloat(document.getElementById('speaking-slider').value),
+        overall: document.getElementById('overall-band').textContent
+    };
+    localStorage.setItem('ieltsvault_band_estimate', JSON.stringify(data));
+    alert('Saved to your profile!');
+}
+
+// Load saved band estimate if exists
+const savedBand = JSON.parse(localStorage.getItem('ieltsvault_band_estimate'));
+if (savedBand) {
+    document.getElementById('listening-slider').value = savedBand.listening;
+    document.getElementById('reading-slider').value = savedBand.reading;
+    document.getElementById('speaking-slider').value = savedBand.speaking;
+    // reverse writing from sub‑criteria? For simplicity, just set overall slider
+    document.getElementById('writing-slider').value = savedBand.writing;
+    updateCalc(); // sync labels
+}
+// Initial update
+updateWriting();
+</script>
+</body>
+</html>
